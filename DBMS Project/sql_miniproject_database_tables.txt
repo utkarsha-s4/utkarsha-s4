@@ -1,0 +1,110 @@
+mysql> CREATE TABLE user (
+    ->     user_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     username VARCHAR(255) NOT NULL,
+    ->     password VARCHAR(255) NOT NULL,
+    ->     email VARCHAR(255) NOT NULL,
+    ->     age INT NOT NULL,
+    ->     gender VARCHAR(10) NOT NULL,
+    ->     height DECIMAL(5,2) NOT NULL,
+    ->     weight DECIMAL(5,2) NOT NULL
+    -> );
+Query OK, 0 rows affected (0.13 sec)
+
+mysql> CREATE TABLE activity_log (
+    ->     log_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     user_id INT,
+    ->     activity_type VARCHAR(255) NOT NULL,
+    ->     duration INT NOT NULL,
+    ->     calory_burnt DECIMAL(8,2) NOT NULL,
+    ->     date_time DATETIME NOT NULL,
+    ->     FOREIGN KEY (user_id) REFERENCES user(user_id)
+    -> );
+Query OK, 0 rows affected (0.19 sec)
+
+mysql> CREATE TABLE sleep_pattern (
+    ->     pattern_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     user_id INT,
+    ->     sleep_start_time DATETIME NOT NULL,
+    ->     sleep_end_time DATETIME NOT NULL,
+    ->     sleep_quality INT NOT NULL,
+    ->     FOREIGN KEY (user_id) REFERENCES user(user_id)
+    -> );
+Query OK, 0 rows affected (0.22 sec)
+
+mysql> CREATE TABLE vital_signs (
+    ->     sign_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     user_id INT,
+    ->     heart_rate INT NOT NULL,
+    ->     oxygen_level DECIMAL(5,2) NOT NULL,
+    ->     temperature DECIMAL(5,2) NOT NULL,
+    ->     time_stamp DATETIME NOT NULL,
+    ->     water_level DECIMAL(5,2) NOT NULL,
+    ->     FOREIGN KEY (user_id) REFERENCES user(user_id)
+    -> );
+Query OK, 0 rows affected (0.23 sec)
+
+mysql> CREATE TABLE water_intake (
+    ->     intake_id INT AUTO_INCREMENT PRIMARY KEY,
+    ->     user_id INT,
+    ->     amount DECIMAL(5,2) NOT NULL,
+    ->     date_time DATETIME NOT NULL,
+    ->     FOREIGN KEY (user_id) REFERENCES user(user_id)
+    -> );
+ INSERT INTO user (username, password, email, age, gender, height, weight)
+    -> VALUES ('shil1428', '123456', 'sheel.dongre@cumminscollege.in', 20, 'Female', 155.00, 49.20),
+    ->        ('utkarsha123', 'utkarsha', 'utkarsha.savkare@cumminscollege.in', 20, 'Female', 158.00, 45.50),
+    ->        ('ruchita@123', 'ruchita01', 'ruchita.satdive@cumminscollege.in', 20, 'Female', 153.00, 50.40);
+Query OK, 3 rows affected (0.10 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO activity_log (user_id, activity_type, duration, calory_burnt, date_time)
+    -> VALUES (1, 'running', 20, 120.23, '2024-04-12 10:30:00'),
+    ->        (2, 'jogging', 30, 115.48, '2024-04-14 06:00:00'),
+    ->        (3, 'cycling', 15, 200.00, '2024-04-14 11:15:00');
+Query OK, 3 rows affected (0.08 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+
+mysql> INSERT INTO vital_signs (user_id, heart_rate, oxygen_level, temperature, time_stamp, water_level)
+    -> VALUES (1, 85, 98.20, 37.00, '2024-04-13 20:00:00', 1.82),
+    ->        (2, 92, 97.50, 36.80, '2024-04-13 15:30:00', 1.07),
+    ->        (3, 97, 99.10, 36.50, '2024-04-13 10:30:00', 0.76);
+Query OK, 3 rows affected (0.01 sec)
+Records: 3  Duplicates: 0  Warnings: 0
+mysql> Select * from user;
++---------+-------------+-----------+------------------------------------+-----+--------+--------+--------+
+| user_id | username    | password  | email                              | age | gender | height | weight |
++---------+-------------+-----------+------------------------------------+-----+--------+--------+--------+
+|       1 | shil1428    | 123456    | sheel.dongre@cumminscollege.in     |  20 | Female | 155.00 |  49.20 |
+|       2 | utkarsha123 | utkarsha  | utkarsha.savkare@cumminscollege.in |  20 | Female | 158.00 |  45.50 |
+|       3 | ruchita@123 | ruchita01 | ruchita.satdive@cumminscollege.in  |  20 | Female | 153.00 |  50.40 |
++---------+-------------+-----------+------------------------------------+-----+--------+--------+--------+
+3 rows in set (0.06 sec)
+
+mysql> Select * from activity_log;
++--------+---------+---------------+----------+--------------+---------------------+
+| log_id | user_id | activity_type | duration | calory_burnt | date_time           |
++--------+---------+---------------+----------+--------------+---------------------+
+|      1 |       1 | running       |       20 |       120.23 | 2024-04-12 10:30:00 |
+|      2 |       2 | jogging       |       30 |       115.48 | 2024-04-14 06:00:00 |
+|      3 |       3 | cycling       |       15 |       200.00 | 2024-04-14 11:15:00 |
++--------+---------+---------------+----------+--------------+---------------------+
+3 rows in set (0.00 sec)
+
+ALTER TABLE sleep_pattern
+    -> MODIFY COLUMN pattern_id INT AUTO_INCREMENT,
+    -> MODIFY COLUMN user_id INT,
+    -> MODIFY COLUMN sleep_start_time DATETIME,
+    -> MODIFY COLUMN sleep_end_time DATETIME,
+    -> MODIFY COLUMN sleep_quality INT,
+    -> ADD COLUMN sleep_date DATE,
+    -> DROP PRIMARY KEY,
+    -> ADD PRIMARY KEY (pattern_id);
+Query OK, 0 rows affected (0.27 sec)
+Records: 0  Duplicates: 0  Warnings: 0
+mysql> INSERT INTO sleep_pattern (pattern_id, user_id, sleep_start_time, sleep_end_time, sleep_quality, sleep_date)
+    -> VALUES
+    -> (1, 1, '2024-04-12 23:30:00', '2024-04-13 07:00:00', 8, '2024-04-12'),
+    -> (2, 2, '2024-04-12 00:45:00', '2024-04-13 07:30:00', 6, '2024-04-12'),
+    -> (3, 3, '2024-04-12 22:45:00', '2024-04-13 07:00:00', 10, '2024-04-12');
+Query OK, 3 rows affected (0.02 sec)
+Records: 3  Duplicates: 0  Warnings: 0
